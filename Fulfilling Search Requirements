@@ -1,0 +1,159 @@
+#include <iostream>
+#include <string>
+#include <iomanip>
+#include <cfloat>
+using namespace std;
+
+class House {
+public:
+    string owner;
+    string address;
+    int bedrooms;
+    float price;
+
+    void readHouseDetails() {
+        cout << "Enter Owner: ";
+        cin.ignore();
+        getline(cin, owner);
+        cout << "Enter Address (City): ";
+        getline(cin, address);
+        cout << "Number of Bedrooms: ";
+        cin >> bedrooms;
+        cout << "Price: ";
+        cin >> price;
+    }
+
+    void displayHouseDetails() const {
+        cout << setw(10) << left << owner;
+        cout << setw(20) << left << address;
+        cout << setw(5) << left << bedrooms;
+        cout << setw(10) << left << price << endl;
+    }
+
+    float priceToSizeRatio() const {
+        return price / bedrooms; 
+    }
+};
+
+void searchHouses(House available[], int numHouses) {
+    float maxPrice;
+    int minBedrooms;
+    string city, pricePreference;
+    
+    cout << "\n\nEnter '?' for no preference in the following questions: ";
+    
+    cout << "\nEnter maximum price: ";
+    cin >> pricePreference;
+    maxPrice = (pricePreference == "?") ? FLT_MAX : stof(pricePreference);
+
+    cout << "Enter minimum number of bedrooms: ";
+    string bedroomsPreference;
+    cin >> bedroomsPreference;
+    minBedrooms = (bedroomsPreference == "?") ? 0 : stoi(bedroomsPreference);
+
+    cout << "Enter city: ";
+    cin >> city;
+
+    cout << "\nHouses matching your criteria:\n\n";
+    cout << setw(10) << left << "Owner";
+    cout << setw(20) << left << "Address";
+    cout << setw(5) << left << "Rooms";
+    cout << setw(10) << left << "Price\n" << endl;
+
+    for (int i = 0; i < numHouses; i++) {
+        bool matches = true;
+
+        if (available[i].price > maxPrice) {
+            matches = false;
+        }
+
+        if (available[i].bedrooms < minBedrooms) {
+            matches = false;
+        }
+
+        if (city != "?" && available[i].address != city) {
+            matches = false;
+        }
+
+        if (matches) {
+            available[i].displayHouseDetails();
+        }
+    }
+}
+
+void findLowestPriceHouse(House available[], int numHouses) {
+    if (numHouses == 0) return;
+
+    int indexLowestPrice = 0;
+    for (int i = 1; i < numHouses; i++) {
+        if (available[i].price < available[indexLowestPrice].price) {
+            indexLowestPrice = i;
+        }
+    }
+
+    cout << "\nHouse with the Lowest Price:\n";
+    available[indexLowestPrice].displayHouseDetails();
+}
+
+void findLargestHouse(House available[], int numHouses) {
+    if (numHouses == 0) return;
+
+    int indexLargestHouse = 0;
+    for (int i = 1; i < numHouses; i++) {
+        if (available[i].bedrooms > available[indexLargestHouse].bedrooms) {
+            indexLargestHouse = i;
+        }
+    }
+
+    cout << "\nHouse with the Largest Number of Bedrooms:\n";
+    available[indexLargestHouse].displayHouseDetails();
+}
+
+void findBestPriceToSizeRatio(House available[], int numHouses) {
+    if (numHouses == 0) return;
+
+    int indexBestRatio = 0;
+    for (int i = 1; i < numHouses; i++) {
+        if (available[i].priceToSizeRatio() < available[indexBestRatio].priceToSizeRatio()) {
+            indexBestRatio = i;
+        }
+    }
+
+    cout << "\nHouse with the Best Price-to-Size Ratio (Price per Bedroom):\n";
+    available[indexBestRatio].displayHouseDetails();
+}
+
+int main() {
+    House available[100];
+    int numHouses = 0;
+    char enterAnotherHouse = 'Y';
+
+    while (enterAnotherHouse == 'Y' && numHouses < 100) {
+        available[numHouses].readHouseDetails();
+        numHouses++;
+
+        cout << "Enter another house? (Y/N): ";
+        cin >> enterAnotherHouse;
+        cin.ignore();
+    }
+
+    cout << "\nEntered House Details:\n\n";
+    cout << setw(10) << left << "Owner";
+    cout << setw(20) << left << "Address";
+    cout << setw(5) << left << "Rooms";
+    cout << setw(10) << left << "Price\n" << endl;
+
+    for (int i = 0; i < numHouses; i++) {
+        available[i].displayHouseDetails();
+    }
+
+    searchHouses(available, numHouses);
+
+    findLowestPriceHouse(available, numHouses);
+
+    findLargestHouse(available, numHouses);
+
+    findBestPriceToSizeRatio(available, numHouses);
+
+    return 0;
+}
