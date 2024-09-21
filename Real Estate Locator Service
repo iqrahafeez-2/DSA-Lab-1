@@ -1,0 +1,59 @@
+#include <iostream>
+#include <string>
+#include <iomanip>
+
+using namespace std;
+
+class House {
+public:
+    string owner;
+    string address;
+    int bedrooms;
+    float price;
+
+    void readHouseDetails() {
+        cout << "Enter Owner: ";
+        getline(cin, owner);
+        cout << "Enter Address: ";
+        getline(cin, address);
+        cout << "Number of Bedrooms: ";
+        cin >> bedrooms;
+        cout << "Price: ";
+        cin >> price;
+    }
+
+    void displayHouseDetails() {
+        cout << setw(10) << left << owner << " | ";
+        cout << setw(20) << left << address << " | ";
+        cout << setw(5) << right << bedrooms << " | ";
+        cout << setw(10) << right << fixed << setprecision(2) << price << endl;
+    }
+};
+
+int main() {
+    House available[100];
+    int numHouses = 0; 
+    char enterAnotherHouse = 'Y';
+
+    while (enterAnotherHouse == 'Y' && numHouses < 100) {
+        available[numHouses].readHouseDetails();
+        numHouses++;
+
+        cout << "Enter another house? (Y/N): ";
+        cin >> enterAnotherHouse;
+        cin.ignore(); 
+    }
+
+    cout << "\nEntered House Details:\n";
+    cout << setw(10) << left << "Owner" << " | ";
+    cout << setw(20) << left << "Address" << " | ";
+    cout << setw(5) << right << "Bedrooms" << " | ";
+    cout << setw(10) << right << "Price" << endl;
+    cout << "---------------------------------------------------------------" << endl;
+
+    for (int i = 0; i < numHouses; i++) {
+        available[i].displayHouseDetails();
+    }
+
+    return 0;
+}
